@@ -1,0 +1,19 @@
+# Node dependencies (covers both web-dash and nested citizen app)
+**/node_modules/
+**/.expo/
+**/dist/
+
+# IDE and AI tools
+**/.claude/
+**/.expo-shared/
+
+# Python backend dependencies
+**/__pycache__/
+**/.pytest_cache/
+**/venv/
+**/.venv/
+
+# Environment secrets and system files
+**/.env
+.DS_Store
+Thumbs.db

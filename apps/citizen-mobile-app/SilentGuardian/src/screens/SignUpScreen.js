@@ -14,9 +14,11 @@ import {
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
-export default function LoginScreen({ onNavigateToSignUp, onLoginSuccess }) {
+export default function SignUpScreen({ onNavigateToLogin }) {
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   return (
     <KeyboardAvoidingView
@@ -42,10 +44,12 @@ export default function LoginScreen({ onNavigateToSignUp, onLoginSuccess }) {
 
         {/* Lower White Card Container */}
         <View style={styles.cardContainer}>
-          <Text style={styles.title}>Login</Text>
-          <Text style={styles.subtitle}>Welcome back , let's get started</Text>
+          <Text style={styles.title}>Sign Up</Text>
+          <Text style={styles.subtitle}>
+            Create your account and become part of this growing community
+          </Text>
 
-          {/* Email Input */}
+          {/* Email Input Field */}
           <Text style={styles.inputLabel}>Email</Text>
           <View style={styles.inputWrapper}>
             <Feather name="mail" size={20} color="#3B82F6" style={styles.inputIcon} />
@@ -60,7 +64,21 @@ export default function LoginScreen({ onNavigateToSignUp, onLoginSuccess }) {
             />
           </View>
 
-          {/* Password Input */}
+          {/* Phone Number Input Field */}
+          <Text style={styles.inputLabel}>Phone Number</Text>
+          <View style={styles.inputWrapper}>
+            <Feather name="phone" size={20} color="#3B82F6" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="+233 XX XXX XXXX"
+              placeholderTextColor="#A0A0A0"
+              keyboardType="phone-pad"
+              value={phone}
+              onChangeText={setPhone}
+            />
+          </View>
+
+          {/* Password Input Field */}
           <Text style={styles.inputLabel}>Enter Password</Text>
           <View style={styles.inputWrapper}>
             <Feather name="lock" size={20} color="#3B82F6" style={styles.inputIcon} />
@@ -74,31 +92,40 @@ export default function LoginScreen({ onNavigateToSignUp, onLoginSuccess }) {
             />
           </View>
 
-          {/* Forgot Password */}
-          <TouchableOpacity style={styles.forgotPasswordContainer} activeOpacity={0.7}>
-            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-          </TouchableOpacity>
+          {/* Confirm Password Input Field */}
+          <Text style={styles.inputLabel}>Confirm Password</Text>
+          <View style={styles.inputWrapper}>
+            <Feather name="lock" size={20} color="#3B82F6" style={styles.inputIcon} />
+            <TextInput
+              style={styles.input}
+              placeholder="••••••••"
+              placeholderTextColor="#A0A0A0"
+              secureTextEntry
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+            />
+          </View>
 
-          {/* Login Action Button */}
-          <TouchableOpacity onPress={onLoginSuccess} activeOpacity={0.8} style={styles.buttonShadow}>
+          {/* Sign Up Action Button */}
+          <TouchableOpacity activeOpacity={0.8} style={styles.buttonShadow}>
             <LinearGradient
               colors={['#005BE3', '#002554']}
               start={{ x: 0, y: 0 }}
               end={{ x: 0, y: 1 }}
               style={styles.buttonGradient}
             >
-              <Text style={styles.buttonText}>Login</Text>
+              <Text style={styles.buttonText}>Sign Up</Text>
             </LinearGradient>
           </TouchableOpacity>
 
-          {/* Navigation link instead of dev menu dock */}
+          {/* Inline Navigation Route Link */}
           <TouchableOpacity 
             style={styles.footerLink} 
-            onPress={onNavigateToSignUp}
+            onPress={onNavigateToLogin}
             activeOpacity={0.7}
           >
             <Text style={styles.footerLinkText}>
-              New user? <Text style={styles.footerLinkBold}>Create Account</Text>
+              Already have an account? <Text style={styles.footerLinkBold}>Sign In</Text>
             </Text>
           </TouchableOpacity>
         </View>
@@ -129,7 +156,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   title: { fontSize: 32, fontWeight: 'bold', color: '#00479E', textAlign: 'center', textDecorationLine: 'underline', marginBottom: 8 },
-  subtitle: { fontSize: 14, color: '#4A4A4A', textAlign: 'center', marginBottom: 35 },
+  subtitle: { fontSize: 14, color: '#4A4A4A', textAlign: 'center', lineHeight: 20, marginBottom: 25, paddingHorizontal: 10 },
   inputLabel: { fontSize: 16, fontWeight: '600', color: '#1A1A1A', marginBottom: 8 },
   inputWrapper: {
     flexDirection: 'row',
@@ -139,13 +166,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     height: 55,
     paddingHorizontal: 15,
-    marginBottom: 20,
+    marginBottom: 15,
     backgroundColor: '#FFFFFF',
   },
   inputIcon: { marginRight: 10 },
   input: { flex: 1, fontSize: 15, color: '#000000', height: '100%' },
-  forgotPasswordContainer: { alignSelf: 'flex-end', marginBottom: 30 },
-  forgotPasswordText: { color: '#1A1A1A', fontSize: 14, fontWeight: '500' },
   buttonShadow: {
     borderRadius: 20,
     shadowColor: '#000',
@@ -153,11 +178,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.35,
     shadowRadius: 5,
     elevation: 8,
-    marginBottom: 35,
+    marginTop: 15,
+    marginBottom: 20,
   },
   buttonGradient: { height: 55, borderRadius: 20, justifyContent: 'center', alignItems: 'center' },
   buttonText: { color: '#FFFFFF', fontSize: 18, fontWeight: 'bold' },
-  footerLink: { marginTop: 10, alignItems: 'center' },
+  footerLink: { marginTop: 5, alignItems: 'center' },
   footerLinkText: { fontSize: 15, color: '#4A4A4A' },
   footerLinkBold: { color: '#00479E', fontWeight: 'bold' }
 });

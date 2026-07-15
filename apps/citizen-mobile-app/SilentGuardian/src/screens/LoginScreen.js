@@ -9,14 +9,26 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  StatusBar
+  StatusBar,
+  Alert
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
-export default function LoginScreen({ onNavigateToSignUp, onLoginSuccess }) {
+export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  // Temporary testing validation routing function
+  const handleLoginPress = () => {
+    if (email.trim() === '' || password.trim() === '') {
+      Alert.alert('Validation Check', 'Please enter any email and password to proceed.');
+      return;
+    }
+
+    // Direct routing using navigation stack context
+    navigation.navigate('Home');
+  };
 
   return (
     <KeyboardAvoidingView
@@ -80,7 +92,7 @@ export default function LoginScreen({ onNavigateToSignUp, onLoginSuccess }) {
           </TouchableOpacity>
 
           {/* Login Action Button */}
-          <TouchableOpacity onPress={onLoginSuccess} activeOpacity={0.8} style={styles.buttonShadow}>
+          <TouchableOpacity onPress={handleLoginPress} activeOpacity={0.8} style={styles.buttonShadow}>
             <LinearGradient
               colors={['#005BE3', '#002554']}
               start={{ x: 0, y: 0 }}
@@ -91,10 +103,10 @@ export default function LoginScreen({ onNavigateToSignUp, onLoginSuccess }) {
             </LinearGradient>
           </TouchableOpacity>
 
-          {/* Navigation link instead of dev menu dock */}
+          {/* Navigation link */}
           <TouchableOpacity 
             style={styles.footerLink} 
-            onPress={onNavigateToSignUp}
+            onPress={() => navigation.navigate('SignUp')}
             activeOpacity={0.7}
           >
             <Text style={styles.footerLinkText}>

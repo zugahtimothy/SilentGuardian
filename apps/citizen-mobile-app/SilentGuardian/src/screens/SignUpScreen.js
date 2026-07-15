@@ -9,16 +9,38 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-  StatusBar
+  StatusBar,
+  Alert
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
-export default function SignUpScreen({ onNavigateToLogin }) {
+export default function SignUpScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  // Temporary testing validation routing function
+  const handleSignUpPress = () => {
+    if (
+      email.trim() === '' || 
+      phone.trim() === '' || 
+      password.trim() === '' || 
+      confirmPassword.trim() === ''
+    ) {
+      Alert.alert('Validation Check', 'Please fill out all fields to proceed.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      Alert.alert('Validation Check', 'Passwords do not match.');
+      return;
+    }
+    
+    // Direct routing to Home on registration validation success
+    navigation.navigate('Home');
+  };
 
   return (
     <KeyboardAvoidingView
@@ -107,7 +129,11 @@ export default function SignUpScreen({ onNavigateToLogin }) {
           </View>
 
           {/* Sign Up Action Button */}
-          <TouchableOpacity activeOpacity={0.8} style={styles.buttonShadow}>
+          <TouchableOpacity 
+            onPress={handleSignUpPress} 
+            activeOpacity={0.8} 
+            style={styles.buttonShadow}
+          >
             <LinearGradient
               colors={['#005BE3', '#002554']}
               start={{ x: 0, y: 0 }}
@@ -121,7 +147,7 @@ export default function SignUpScreen({ onNavigateToLogin }) {
           {/* Inline Navigation Route Link */}
           <TouchableOpacity 
             style={styles.footerLink} 
-            onPress={onNavigateToLogin}
+            onPress={() => navigation.navigate('Login')}
             activeOpacity={0.7}
           >
             <Text style={styles.footerLinkText}>

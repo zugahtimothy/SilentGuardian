@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,29 +9,70 @@ import {
   SafeAreaView,
   StatusBar,
   Dimensions,
-  Platform
+  Platform,
+  Modal
 } from 'react-native';
-import { FontAwesome5, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const { width } = Dimensions.get('window');
+// Custom imports
+import CustomTabBar from '../components/CustomTabBar'; 
+import SosActiveScreen from './SosActiveScreen';
+import SecurityActiveScreen from './SecurityActiveScreen'; 
+import MedicalActiveScreen from './MedicalActiveScreen'; 
+import TrustedContactsActiveScreen from './TrustedContactsActiveScreen';
 
-// Precise calculations for the full-width edge-to-edge banner
-const SAFETY_OVERLAY_WIDTH = width; // 100% of the screen width
-const SAFETY_OVERLAY_HEIGHT = SAFETY_OVERLAY_WIDTH * (268 / 712); // Locks the 712x268 ratio perfectly
+const { width } = Dimensions.get('window');
+const SAFETY_OVERLAY_HEIGHT = width * (268 / 712); 
 
 export default function HomeScreen() {
+  const [activeTab, setActiveTab] = useState('Home');
+  const [isSosActive, setIsSosActive] = useState(false);
+  
+  // Controls which view to display inside the Emergency Modal: 'choices', 'security', or 'medical'
+  const [sosView, setSosView] = useState('choices');
+
+  // Called when the red SOS button is pressed on the main Home screen
+  const handleStartSos = () => {
+    setSosView('choices'); // Reset to the selection screen
+    setIsSosActive(true);
+  };
+
+  const renderModalContent = () => {
+  switch (sosView) {
+    case 'security':
+      return <SecurityActiveScreen onBack={() => setSosView('choices')} />;
+    case 'medical':
+      return <MedicalActiveScreen onBack={() => setSosView('choices')} />;
+    case 'contacts':
+      return (
+        <TrustedContactsActiveScreen 
+          onBack={() => setSosView('choices')} 
+          onResolve={() => setIsSosActive(false)} // Closes out the emergency state completely
+        />
+      );
+    case 'choices':
+    default:
+      return (
+        <SosActiveScreen 
+          onCancel={() => setIsSosActive(false)} 
+          onSelectSecurity={() => setSosView('security')}
+          onSelectMedical={() => setSosView('medical')}
+          onSelectContacts={() => setSosView('contacts')} // New trigger hooked up!
+        />
+      );
+  }
+};
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       
-      {/* Main Scrollable Content */}
       <ScrollView 
         style={styles.container}
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
-        
         {/* ================= HEADER SECTION ================= */}
         <View style={styles.header}>
           <View style={styles.userInfo}>
@@ -58,26 +99,22 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* ================= HERO IMAGE SECTION (KNUST ENTRANCE) ================= */}
+        {/* ================= HERO IMAGE SECTION ================= */}
         <View style={styles.heroContainer}>
           <Image
             source={require('../../assets/knust-entrance.jpg')} 
             style={styles.heroImage}
             resizeMode="cover"
           />
-          {/* Custom Indicator Dots Overlaid on Hero Image */}
-          <View style={styles.indicatorContainer}>
-            <View style={[styles.dot, styles.activeDot]} />
-            <View style={styles.dot} />
-            <View style={styles.dot} />
-            <View style={styles.dot} />
-            <View style={styles.dot} />
-          </View>
         </View>
 
         {/* ================= SOS TRIGGER SECTION ================= */}
         <View style={styles.sosSection}>
-          <TouchableOpacity activeOpacity={0.9} style={styles.sosButtonShadow}>
+          <TouchableOpacity 
+            activeOpacity={0.9} 
+            style={styles.sosButtonShadow}
+            onPress={handleStartSos}
+          >
             <LinearGradient
               colors={['#A80000', '#7A0000']} 
               start={{ x: 0, y: 0 }}
@@ -93,19 +130,15 @@ export default function HomeScreen() {
 
         {/* ================= EXPLORE FEATURES SECTION ================= */}
         <View style={styles.exploreSection}>
-          {/* Section title is padded to match alignment */}
           <Text style={styles.sectionTitle}>Explore Features</Text>
           
-          {/* Card stretches 100% full-width flush to screen edges */}
           <TouchableOpacity activeOpacity={0.95} style={styles.safetyCard}>
-            {/* Background image: section-explore.jpg */}
             <Image
               source={require('../../assets/section-explore.png')} 
               style={styles.cardBgImage}
               resizeMode="cover"
             />
 
-            {/* Safety Pill Overlay: background-safety.png stretching 100% wide */}
             <View style={styles.glassWrapper}>
               <Image 
                 source={require('../../assets/background-safety.png')}
@@ -114,14 +147,12 @@ export default function HomeScreen() {
               />
               
               <View style={styles.glassContent}>
-                {/* Shield Group: shield-group.png */}
                 <Image 
                   source={require('../../assets/shield-group.png')}
                   style={styles.shieldAsset}
                   resizeMode="contain"
                 />
                 
-                {/* Text Layout */}
                 <View style={styles.glassTextWrapper}>
                   <Text style={styles.glassTitle}>Safety</Text>
                   <Text style={styles.glassSubtitle}>
@@ -135,62 +166,22 @@ export default function HomeScreen() {
 
       </ScrollView>
 
-      {/* ================= BOTTOM TAB NAVIGATION ================= */}
-      <View style={styles.navBarWrapper}>
-        <View style={styles.navBar}>
-          {/* Home Tab (Active) */}
-          <TouchableOpacity style={styles.navItem} activeOpacity={0.8}>
-            <View style={styles.activeTabCircle}>
-              <Image 
-                source={require('../../assets/home-icon-1.png')} 
-                style={styles.navIconActive} 
-                resizeMode="contain"
-              />
-            </View>
-            <Text style={[styles.navText, styles.activeNavText]}>Home</Text>
-          </TouchableOpacity>
+      {/* ================= REUSABLE BOTTOM TAB NAVIGATION ================= */}
+      <CustomTabBar 
+        activeTab={activeTab} 
+        onTabPress={(tabId) => setActiveTab(tabId)} 
+      />
 
-          {/* Reports Tab */}
-          <TouchableOpacity style={styles.navItem} activeOpacity={0.8}>
-            <Image 
-              source={require('../../assets/reports-icon.png')} 
-              style={styles.navIcon} 
-              resizeMode="contain"
-            />
-            <Text style={styles.navText}>Reports</Text>
-          </TouchableOpacity>
+      {/* ================= ACTIVE EMERGENCY OVERLAY MODAL ================= */}
+      <Modal
+        visible={isSosActive}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setIsSosActive(false)}
+      >
+        {renderModalContent()}
+      </Modal>
 
-          {/* Share Location Tab */}
-          <TouchableOpacity style={styles.navItem} activeOpacity={0.8}>
-            <Image 
-              source={require('../../assets/share-location-icon.png')} 
-              style={styles.navIcon} 
-              resizeMode="contain"
-            />
-            <Text style={styles.navText}>Share location</Text>
-          </TouchableOpacity>
-
-          {/* Call Security Tab */}
-          <TouchableOpacity style={styles.navItem} activeOpacity={0.8}>
-            <Image 
-              source={require('../../assets/call-security-icon.png')} 
-              style={styles.navIcon} 
-              resizeMode="contain"
-            />
-            <Text style={styles.navText}>Call Security</Text>
-          </TouchableOpacity>
-
-          {/* Recent Alert Tab */}
-          <TouchableOpacity style={styles.navItem} activeOpacity={0.8}>
-            <Image 
-              source={require('../../assets/recents.png')} 
-              style={styles.navIcon} 
-              resizeMode="contain"
-            />
-            <Text style={styles.navText}>Recent Alert</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
     </SafeAreaView>
   );
 }
@@ -206,10 +197,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   scrollContainer: {
-    paddingBottom: 110, 
+    paddingBottom: 110,
   },
-
-  // Header Styling
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -262,8 +251,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
-  // Hero Section
   heroContainer: {
     width: '100%',
     height: 230,
@@ -275,32 +262,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  indicatorContainer: {
-    position: 'absolute',
-    bottom: 12,
-    alignSelf: 'center',
-    flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.45)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    gap: 5,
-    alignItems: 'center',
-  },
-  dot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#6C7A89',
-  },
-  activeDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#000000',
-  },
-
-  // SOS Section
   sosSection: {
     alignItems: 'center',
     marginTop: 25,
@@ -338,8 +299,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginTop: 10,
   },
-
-  // Explore Section
   exploreSection: {
     marginTop: 10,
     width: '100%',
@@ -349,13 +308,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333333',
     marginBottom: 12,
-    paddingHorizontal: 20, // Keeps the title aligned nicely with the other components
+    paddingHorizontal: 20,
   },
   safetyCard: {
     width: '100%',
     height: 220,
     position: 'relative',
     backgroundColor: '#EAEAEA',
+    justifyContent: 'center',
   },
   cardBgImage: {
     width: '100%',
@@ -363,96 +323,38 @@ const styles = StyleSheet.create({
   },
   glassWrapper: {
     position: 'absolute',
-    bottom: 20, 
-    left: 30, 
-    right: 0, 
-    height: SAFETY_OVERLAY_HEIGHT, // Perfect aspect-ratio scaling across screen widths
+    bottom: '8%', 
+    alignSelf: 'center', 
+    width: '86%', 
+    height: SAFETY_OVERLAY_HEIGHT,
   },
   glassContent: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 18,
   },
   shieldAsset: {
-    width: 86, 
-    height: 103, // Visually balanced ratio based on the 122x146 design specs
-    marginTop: -32, // Sits beautifully overlapping the top line of the overlay banner
+    width: 80, 
+    height: 95, 
+    marginTop: -12, 
   },
   glassTextWrapper: {
-    marginLeft: 15,
+    marginLeft: 12,
     flex: 1,
     justifyContent: 'center',
   },
   glassTitle: {
     fontFamily: 'Poppins-ExtraBold',
-    fontSize: 32,
+    fontSize: 30,
     color: '#222222',
-    lineHeight: 36,
+    lineHeight: 34,
   },
   glassSubtitle: {
     fontFamily: 'Poppins-Light',
-    fontSize: 15,
+    fontSize: 14,
     color: '#333333',
     lineHeight: 18,
     marginTop: 2,
-  },
-
-  // Bottom Nav Dock
-  navBarWrapper: {
-    position: 'absolute',
-    bottom: 15,
-    left: 0,
-    right: 0,
-    alignItems: 'center',
-  },
-  navBar: {
-    flexDirection: 'row',
-    backgroundColor: '#053E85', 
-    width: width * 0.94,
-    height: 75,
-    borderRadius: 35,
-    paddingHorizontal: 8,
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.35,
-    shadowRadius: 10,
-    elevation: 12,
-  },
-  navItem: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-  },
-  activeTabCircle: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 2,
-  },
-  navIconActive: {
-    width: 24,
-    height: 24,
-  },
-  navIcon: {
-    width: 22,
-    height: 22,
-    marginBottom: 4,
-  },
-  navText: {
-    fontSize: 9.5,
-    color: '#CDD2D6',
-    marginTop: 4,
-    textAlign: 'center',
-    fontWeight: '500',
-  },
-  activeNavText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
   },
 });

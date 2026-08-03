@@ -13,15 +13,31 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "SilentGuardian requires access to your location to broadcast live coordinates during emergencies.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "SilentGuardian uses your location to keep safety responders updated with your position."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ]
     },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "SilentGuardian requires access to your location to broadcast live coordinates during emergencies."
+        }
+      ]
+    ],
     "web": {
       "favicon": "./assets/favicon.png"
     }

@@ -25,7 +25,7 @@ import TrustedContactsActiveScreen from './TrustedContactsActiveScreen';
 const { width } = Dimensions.get('window');
 const SAFETY_OVERLAY_HEIGHT = width * (268 / 712); 
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const [activeTab, setActiveTab] = useState('Home');
   const [isSosActive, setIsSosActive] = useState(false);
   
@@ -39,30 +39,30 @@ export default function HomeScreen() {
   };
 
   const renderModalContent = () => {
-  switch (sosView) {
-    case 'security':
-      return <SecurityActiveScreen onBack={() => setSosView('choices')} />;
-    case 'medical':
-      return <MedicalActiveScreen onBack={() => setSosView('choices')} />;
-    case 'contacts':
-      return (
-        <TrustedContactsActiveScreen 
-          onBack={() => setSosView('choices')} 
-          onResolve={() => setIsSosActive(false)} // Closes out the emergency state completely
-        />
-      );
-    case 'choices':
-    default:
-      return (
-        <SosActiveScreen 
-          onCancel={() => setIsSosActive(false)} 
-          onSelectSecurity={() => setSosView('security')}
-          onSelectMedical={() => setSosView('medical')}
-          onSelectContacts={() => setSosView('contacts')} // New trigger hooked up!
-        />
-      );
-  }
-};
+    switch (sosView) {
+      case 'security':
+        return <SecurityActiveScreen onBack={() => setSosView('choices')} />;
+      case 'medical':
+        return <MedicalActiveScreen onBack={() => setSosView('choices')} />;
+      case 'contacts':
+        return (
+          <TrustedContactsActiveScreen 
+            onBack={() => setSosView('choices')} 
+            onResolve={() => setIsSosActive(false)} // Closes out the emergency state completely
+          />
+        );
+      case 'choices':
+      default:
+        return (
+          <SosActiveScreen 
+            onCancel={() => setIsSosActive(false)} 
+            onSelectSecurity={() => setSosView('security')}
+            onSelectMedical={() => setSosView('medical')}
+            onSelectContacts={() => setSosView('contacts')}
+          />
+        );
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -75,7 +75,12 @@ export default function HomeScreen() {
       >
         {/* ================= HEADER SECTION ================= */}
         <View style={styles.header}>
-          <View style={styles.userInfo}>
+          {/* Tapping user info routes directly to ProfileScreen */}
+          <TouchableOpacity 
+            style={styles.userInfo}
+            activeOpacity={0.8}
+            onPress={() => navigation && navigation.navigate('Profile')}
+          >
             <Image
               source={{ uri: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=150&q=80' }} 
               style={styles.avatar}
@@ -87,13 +92,22 @@ export default function HomeScreen() {
               </Text>
               <Text style={styles.subWelcomeText}>Your safety is our priority</Text>
             </View>
-          </View>
+          </TouchableOpacity>
           
           <View style={styles.headerActions}>
-            <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
+            <TouchableOpacity 
+              style={styles.iconButton} 
+              activeOpacity={0.7}
+              onPress={() => navigation && navigation.navigate('RecentAlert')}
+            >
               <Ionicons name="notifications" size={22} color="#FFFFFF" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton} activeOpacity={0.7}>
+
+            <TouchableOpacity 
+              style={styles.iconButton} 
+              activeOpacity={0.7}
+              onPress={() => navigation && navigation.navigate('Settings')}
+            >
               <Ionicons name="settings" size={22} color="#FFFFFF" />
             </TouchableOpacity>
           </View>

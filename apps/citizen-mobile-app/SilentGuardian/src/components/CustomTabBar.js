@@ -5,7 +5,7 @@ import {
   View,
   Image,
   TouchableOpacity,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 
 const { width } = Dimensions.get('window');
@@ -17,7 +17,6 @@ export default function CustomTabBar({ activeTab, onTabPress }) {
       id: 'Home',
       label: 'Home',
       icon: require('../../assets/home-icon-1.png'),
-      hasActiveCircle: true,
     },
     {
       id: 'Reports',
@@ -37,12 +36,12 @@ export default function CustomTabBar({ activeTab, onTabPress }) {
     {
       id: 'RecentAlert',
       label: 'Recent Alert',
-      icon: require('../../assets/recents.png'), // Note: Ensure this matches your local "recents.png" or "recents-icon.png" filename
+      icon: require('../../assets/recents.png'),
     },
   ];
 
   return (
-    <View style={styles.navBarWrapper}>
+    <View style={styles.navBarWrapper} pointerEvents="box-none">
       <View style={styles.navBar}>
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
@@ -51,11 +50,16 @@ export default function CustomTabBar({ activeTab, onTabPress }) {
             <TouchableOpacity 
               key={tab.id}
               style={styles.navItem} 
-              activeOpacity={0.8}
-              onPress={() => onTabPress(tab.id)}
+              activeOpacity={0.7}
+              onPress={() => {
+                console.log('Tapped tab:', tab.id);
+                if (onTabPress) {
+                  onTabPress(tab.id);
+                }
+              }}
             >
-              {/* If it's the active tab, wrap it in your custom semi-transparent circle */}
-              {isActive && tab.hasActiveCircle ? (
+              {/* Active tab displays semi-transparent highlighted circle background */}
+              {isActive ? (
                 <View style={styles.activeTabCircle}>
                   <Image 
                     source={tab.icon} 
@@ -66,11 +70,7 @@ export default function CustomTabBar({ activeTab, onTabPress }) {
               ) : (
                 <Image 
                   source={tab.icon} 
-                  style={[
-                    styles.navIcon, 
-                    // Slight visual fade for inactive tabs to bring focus to the active tab
-                    !isActive && { opacity: 0.7 } 
-                  ]} 
+                  style={[styles.navIcon, { opacity: 0.7 }]} 
                   resizeMode="contain"
                 />
               )}
@@ -93,6 +93,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     alignItems: 'center',
+    zIndex: 999, // Guarantees the tab bar sits above screen content
+    elevation: 12,
   },
   navBar: {
     flexDirection: 'row',
@@ -113,6 +115,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
+    height: '100%', // Maximize tap target area
   },
   activeTabCircle: {
     width: 44,

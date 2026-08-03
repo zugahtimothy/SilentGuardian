@@ -1,32 +1,32 @@
 import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import HomeScreen from '../screens/HomeScreen'; // Reaching out of components into screens
-import CustomTabBar from './CustomTabBar';      // Sibling component in the same folder
 
-// Simple placeholder screens for the other tabs until we build them
-const ReportsScreen = () => <View style={styles.placeholder} />;
-const ShareLocationScreen = () => <View style={styles.placeholder} />;
-const CallSecurityScreen = () => <View style={styles.placeholder} />;
-const RecentAlertScreen = () => <View style={styles.placeholder} />;
+// Screen Imports
+import HomeScreen from '../screens/HomeScreen';
+import ReportsScreen from '../screens/ReportsScreen';
+import ShareLocationScreen from '../screens/ShareLocationScreen';
+import CallSecurityScreen from '../screens/CallSecurityScreen';
+import RecentAlertsScreen from '../screens/RecentAlertsScreen'; // <-- Real screen imported
+import CustomTabBar from './CustomTabBar';
 
-export default function MainContainer() {
+export default function MainContainer({ navigation }) {
   const [activeTab, setActiveTab] = useState('Home');
 
   // Dynamic screen switcher
   const renderScreen = () => {
     switch (activeTab) {
       case 'Home':
-        return <HomeScreen />;
+        return <HomeScreen navigation={navigation} />;
       case 'Reports':
-        return <ReportsScreen />;
+        return <ReportsScreen navigation={navigation} />;
       case 'ShareLocation':
-        return <ShareLocationScreen />;
+        return <ShareLocationScreen navigation={navigation} />;
       case 'CallSecurity':
-        return <CallSecurityScreen />;
+        return <CallSecurityScreen navigation={navigation} />;
       case 'RecentAlert':
-        return <RecentAlertScreen />;
+        return <RecentAlertsScreen navigation={navigation} />; // <-- Connected!
       default:
-        return <HomeScreen />;
+        return <HomeScreen navigation={navigation} />;
     }
   };
 
@@ -54,8 +54,4 @@ const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
   },
-  placeholder: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  }
 });

@@ -11,13 +11,7 @@ import {
 } from 'react-native';
 import { Ionicons, FontAwesome5, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 
-// Custom tab bar import
-import CustomTabBar from '../components/CustomTabBar';
-
 export default function SecurityActiveScreen({ onBack }) {
-  // Track the active tab locally for this screen
-  const [activeTab, setActiveTab] = useState('Home');
-  
   // State to track the active threat type
   const [selectedThreat, setSelectedThreat] = useState(null);
 
@@ -107,7 +101,7 @@ export default function SecurityActiveScreen({ onBack }) {
         <View style={styles.actionContainer}>
           {/* Dispatch Patrol */}
           <TouchableOpacity style={styles.dispatchButton} activeOpacity={0.9}>
-            <Text style={styles.dispatchButtonText}>🚨 Dispatch Patrol Now</Text>
+            <Text style={styles.dispatchButtonText}>🚨 Need Patrol Team Now</Text>
           </TouchableOpacity>
 
           {/* Call Directly */}
@@ -118,12 +112,6 @@ export default function SecurityActiveScreen({ onBack }) {
         </View>
 
       </ScrollView>
-
-      {/* ================= REUSABLE BOTTOM TAB BAR ================= */}
-      <CustomTabBar 
-        activeTab={activeTab} 
-        onTabPress={(tabId) => setActiveTab(tabId)} 
-      />
     </SafeAreaView>
   );
 }
@@ -139,7 +127,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   scrollContainer: {
-    paddingBottom: 110, 
+    paddingBottom: 30, // Reduced bottom padding since floating tab bar is hidden
     paddingHorizontal: 24,
   },
 
@@ -200,11 +188,11 @@ const styles = StyleSheet.create({
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between', // Distributes the pair evenly on each row
+    justifyContent: 'space-between',
     width: '100%',
   },
   gridItem: {
-    width: '48%', // Forces exactly 2 buttons per row (leaving a clean 4% space between)
+    width: '48%',
     height: 100,
     borderWidth: 1,
     borderColor: '#B0C4DE',
@@ -212,7 +200,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    marginBottom: 12, // Spacing beneath the first row of elements
+    marginBottom: 12,
   },
   iconWrapper: {
     marginBottom: 8,

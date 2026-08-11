@@ -25,7 +25,7 @@ import TrustedContactsActiveScreen from './TrustedContactsActiveScreen';
 const { width } = Dimensions.get('window');
 const SAFETY_OVERLAY_HEIGHT = width * (268 / 712); 
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ navigation, onSelectTab }) {
   const [activeTab, setActiveTab] = useState('Home');
   const [isSosActive, setIsSosActive] = useState(false);
   
@@ -98,7 +98,7 @@ export default function HomeScreen({ navigation }) {
             <TouchableOpacity 
               style={styles.iconButton} 
               activeOpacity={0.7}
-              onPress={() => navigation && navigation.navigate('RecentAlert')}
+              onPress={() => onSelectTab && onSelectTab('RecentAlert')} // Switches directly to RecentAlert tab
             >
               <Ionicons name="notifications" size={22} color="#FFFFFF" />
             </TouchableOpacity>

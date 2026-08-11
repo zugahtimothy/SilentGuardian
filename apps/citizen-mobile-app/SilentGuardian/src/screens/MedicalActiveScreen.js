@@ -12,13 +12,7 @@ import {
 } from 'react-native';
 import { Ionicons, FontAwesome5, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 
-// Custom tab bar import
-import CustomTabBar from '../components/CustomTabBar';
-
 export default function MedicalActiveScreen({ onBack }) {
-  // Track the active tab locally for this screen
-  const [activeTab, setActiveTab] = useState('Home');
-  
   // State to track the active medical crisis type
   const [selectedEmergency, setSelectedEmergency] = useState(null);
   
@@ -131,12 +125,6 @@ export default function MedicalActiveScreen({ onBack }) {
         </View>
 
       </ScrollView>
-
-      {/* ================= REUSABLE BOTTOM TAB NAVIGATION ================= */}
-      <CustomTabBar 
-        activeTab={activeTab} 
-        onTabPress={(tabId) => setActiveTab(tabId)} 
-      />
     </SafeAreaView>
   );
 }
@@ -152,7 +140,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   scrollContainer: {
-    paddingBottom: 110, 
+    paddingBottom: 30, // Adjusted padding since floating tab bar is hidden
     paddingHorizontal: 24,
   },
 
@@ -209,7 +197,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
 
-  // FIXED: Forces 2 per row side-by-side distribution layout 
+  // Grid Layout
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -217,7 +205,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   gridItem: {
-    width: '48%', // Guarantees a side-by-side 2-column breakdown layout style
+    width: '48%',
     height: 100,
     borderWidth: 1,
     borderColor: '#B0C4DE',

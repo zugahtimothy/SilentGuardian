@@ -6,7 +6,7 @@ import HomeScreen from '../screens/HomeScreen';
 import ReportsScreen from '../screens/ReportsScreen';
 import ShareLocationScreen from '../screens/ShareLocationScreen';
 import CallSecurityScreen from '../screens/CallSecurityScreen';
-import RecentAlertsScreen from '../screens/RecentAlertsScreen'; // <-- Real screen imported
+import RecentAlertsScreen from '../screens/RecentAlertsScreen';
 import CustomTabBar from './CustomTabBar';
 
 export default function MainContainer({ navigation }) {
@@ -16,7 +16,12 @@ export default function MainContainer({ navigation }) {
   const renderScreen = () => {
     switch (activeTab) {
       case 'Home':
-        return <HomeScreen navigation={navigation} />;
+        return (
+          <HomeScreen 
+            navigation={navigation} 
+            onSelectTab={(tabId) => setActiveTab(tabId)} 
+          />
+        );
       case 'Reports':
         return <ReportsScreen navigation={navigation} />;
       case 'ShareLocation':
@@ -24,9 +29,14 @@ export default function MainContainer({ navigation }) {
       case 'CallSecurity':
         return <CallSecurityScreen navigation={navigation} />;
       case 'RecentAlert':
-        return <RecentAlertsScreen navigation={navigation} />; // <-- Connected!
+        return <RecentAlertsScreen navigation={navigation} />;
       default:
-        return <HomeScreen navigation={navigation} />;
+        return (
+          <HomeScreen 
+            navigation={navigation} 
+            onSelectTab={(tabId) => setActiveTab(tabId)} 
+          />
+        );
     }
   };
 

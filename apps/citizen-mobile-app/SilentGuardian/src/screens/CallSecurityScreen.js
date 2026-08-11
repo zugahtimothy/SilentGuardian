@@ -20,9 +20,9 @@ export default function CallSecurityScreen({ navigation }) {
   const otherNumbers = [
     {
       id: 'clinic',
-      title: 'Campus Clinic',
-      number: '024 123 4567',
-      rawNumber: '0241234567',
+      title: "Student's clinic",
+      number: '054 134 0065',
+      rawNumber: '0541340065',
       icon: 'hospital-building',
       iconType: 'mci',
       bgColor: '#E2E8F0',
@@ -30,9 +30,9 @@ export default function CallSecurityScreen({ navigation }) {
     },
     {
       id: 'police',
-      title: 'Police',
-      number: '191',
-      rawNumber: '191',
+      title: 'Campus Security',
+      number: '050 134 7350',
+      rawNumber: '0501347350',
       icon: 'police-badge',
       iconType: 'mci',
       bgColor: '#053E85',
@@ -40,9 +40,9 @@ export default function CallSecurityScreen({ navigation }) {
     },
     {
       id: 'fire',
-      title: 'Fire Service',
-      number: '192',
-      rawNumber: '192',
+      title: 'Tech Fire Service',
+      number: '032 239 2292',
+      rawNumber: '0322392292',
       icon: 'fire',
       iconType: 'mci',
       bgColor: '#FF9800',
@@ -50,9 +50,9 @@ export default function CallSecurityScreen({ navigation }) {
     },
     {
       id: 'ambulance',
-      title: 'Ambulance',
-      number: '193',
-      rawNumber: '193',
+      title: 'Tech Ambulance',
+      number: '032 206 0021',
+      rawNumber: '0322060021',
       icon: 'ambulance',
       iconType: 'fa5',
       bgColor: '#E53935',
@@ -148,26 +148,7 @@ export default function CallSecurityScreen({ navigation }) {
           ))}
         </View>
 
-        {/* Live Chat Banner */}
-        <TouchableOpacity
-          style={styles.chatBanner}
-          activeOpacity={0.8}
-          onPress={() => {
-            Alert.alert('Live Chat', 'Connecting to security dispatch chat...');
-          }}
-        >
-          <View style={styles.chatTextContainer}>
-            <Text style={styles.chatTitle}>Live chat</Text>
-            <Text style={styles.chatSubtext}>Chat with security now</Text>
-          </View>
-
-          <View style={styles.chatRightContainer}>
-            <View style={styles.chatIconBadge}>
-              <Ionicons name="chatbubble" size={16} color="#FFFFFF" />
-            </View>
-            <Ionicons name="chevron-forward" size={18} color="#053E85" style={{ marginLeft: 8 }} />
-          </View>
-        </TouchableOpacity>
+        
       </ScrollView>
     </SafeAreaView>
   );

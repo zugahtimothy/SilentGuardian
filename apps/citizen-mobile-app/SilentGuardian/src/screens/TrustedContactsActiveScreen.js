@@ -15,11 +15,42 @@ import {
 } from 'react-native';
 import { Ionicons, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 
+// Phone number auto-formatter helper
+const formatPhoneNumber = (text) => {
+  // Retain + if present at start, strip all other non-digits
+  const hasPlus = text.startsWith('+');
+  const cleaned = text.replace(/\D/g, '');
+
+  if (!cleaned) return hasPlus ? '+' : '';
+
+  // Format into chunks: +XXX XX XXX XXXX
+  let formatted = hasPlus ? `+${cleaned}` : cleaned;
+
+  if (hasPlus) {
+    // International pattern like +233 24 123 4567
+    const parts = [];
+    if (cleaned.length > 0) parts.push('+' + cleaned.slice(0, 3));
+    if (cleaned.length > 3) parts.push(cleaned.slice(3, 5));
+    if (cleaned.length > 5) parts.push(cleaned.slice(5, 8));
+    if (cleaned.length > 8) parts.push(cleaned.slice(8, 12));
+    formatted = parts.join(' ');
+  } else {
+    // Local pattern like 024 123 4567
+    const parts = [];
+    if (cleaned.length > 0) parts.push(cleaned.slice(0, 3));
+    if (cleaned.length > 3) parts.push(cleaned.slice(3, 6));
+    if (cleaned.length > 6) parts.push(cleaned.slice(6, 10));
+    formatted = parts.join(' ');
+  }
+
+  return formatted;
+};
+
 export default function TrustedContactsActiveScreen({ onBack, onSave }) {
-  // Contact list state
+  // Contact list state with local Jenifer.jpg asset
   const [contacts, setContacts] = useState([
-    { id: '1', name: 'Daddy', phone: '+233 26 678 7654', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=100&q=80' },
-    { id: '2', name: 'Mom', phone: '+233 24 123 4567', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80' },
+    { id: '1', name: 'Daddy', phone: '+233 26 678 7654', avatar: require('../../assets/Jenifer.jpg') },
+    { id: '2', name: 'Mom', phone: '+233 24 123 4567', avatar: require('../../assets/Jenifer.jpg') },
   ]);
 
   // Modal State for Add/Edit Form
@@ -49,15 +80,22 @@ export default function TrustedContactsActiveScreen({ onBack, onSave }) {
     setIsModalVisible(true);
   };
 
+  // Handle phone input typing with auto-formatting
+  const handlePhoneChange = (text) => {
+    setFormPhone(formatPhoneNumber(text));
+  };
+
   // Save Contact (Create or Update)
   const handleSaveContact = () => {
     if (!formName.trim() || !formPhone.trim()) return;
+
+    const formattedPhone = formatPhoneNumber(formPhone.trim());
 
     if (editingContactId) {
       setContacts(prev =>
         prev.map(item =>
           item.id === editingContactId
-            ? { ...item, name: formName.trim(), phone: formPhone.trim() }
+            ? { ...item, name: formName.trim(), phone: formattedPhone }
             : item
         )
       );
@@ -65,8 +103,8 @@ export default function TrustedContactsActiveScreen({ onBack, onSave }) {
       const newContact = {
         id: Date.now().toString(),
         name: formName.trim(),
-        phone: formPhone.trim(),
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80',
+        phone: formattedPhone,
+        avatar: require('../../assets/Jenifer.jpg'),
       };
       setContacts(prev => [...prev, newContact]);
     }
@@ -133,7 +171,7 @@ export default function TrustedContactsActiveScreen({ onBack, onSave }) {
                 >
                   <View style={styles.contactCard}>
                     <View style={styles.cardLeftSection}>
-                      <Image source={{ uri: contact.avatar }} style={styles.avatar} />
+                      <Image source={contact.avatar} style={styles.avatar} resizeMode="cover" />
                       <View style={styles.textGroup}>
                         <Text style={styles.contactName}>{contact.name}</Text>
                         <Text style={styles.contactPhone}>{contact.phone}</Text>
@@ -216,7 +254,7 @@ export default function TrustedContactsActiveScreen({ onBack, onSave }) {
                       placeholder="e.g. +233 20 000 0000"
                       keyboardType="phone-pad"
                       value={formPhone}
-                      onChangeText={setFormPhone}
+                      onChangeText={handlePhoneChange}
                     />
                   </View>
 

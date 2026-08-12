@@ -82,8 +82,9 @@ export default function HomeScreen({ navigation, onSelectTab }) {
             onPress={() => navigation && navigation.navigate('Profile')}
           >
             <Image
-              source={{ uri: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=150&q=80' }} 
+              source={require('../../assets/timothy.jpg')} 
               style={styles.avatar}
+              resizeMode="cover"
             />
             <View style={styles.welcomeTextContainer}>
               <Text style={styles.welcomeText} numberOfLines={2}>
